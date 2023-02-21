@@ -377,7 +377,6 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
-
 def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -416,7 +415,6 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
         points.pop(index)
 
     return pathLength
-
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -510,7 +508,22 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodList = foodGrid.asList()
+
+    if not foodList:
+        return 0
+
+    # Compute the distance between Pacman and the closest food
+    minDistance = min([util.manhattanDistance(position, food) for food in foodList])
+
+    # Compute the sum of distances between Pacman and all the remaining food
+    remainingFoodDistances = [util.manhattanDistance(position, food) for food in foodList]
+    remainingFoodDistances.remove(minDistance)
+    sumDistances = sum(remainingFoodDistances)
+
+    # Return the sum of the two distances
+    return minDistance + sumDistances
+    #return 0
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -541,6 +554,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        #return search.aStarSearch(problem, heuristic=manhattanHeuristic)
         util.raiseNotDefined()
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -577,6 +591,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
+        #return self.food[x][y]
         util.raiseNotDefined()
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
